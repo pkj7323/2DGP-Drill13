@@ -217,20 +217,22 @@ class Boy:
         self.y += math.sin(self.dir) * self.speed * game_framework.frame_time
 
         #clamp 는 가운데 값을 앞뒤 값 사이로 제한 한다.
-        #self.x = clamp(25.0, self.x, server.background.w - 25.0)
-        #self.y = clamp(25.0, self.y, server.background.h - 25.0)
+        self.x = clamp(25.0, self.x, server.background.w - 25.0)
+        self.y = clamp(25.0, self.y, server.background.h - 25.0)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
 
     def draw(self):
-        sx,sy = get_canvas_width()/2,get_canvas_width()/2
+        sx,sy = self.x - server.background.window_left, self.y - server.background.window_bottom
         self.image.clip_draw(int(self.frame) * 100, self.action * 100, 100, 100, sx, sy)
         self.font.draw(int(sx - 100), int(sy + 60), f'({self.x:5.5}, {self.y:5.5})', (255, 255, 0))
+        draw_rectangle(*self.get_bb())
 
 
     def get_bb(self):
-        return self.x - 20, self.y - 50, self.x + 20, self.y + 50
+        sx, sy = self.x - server.background.window_left, self.y - server.background.window_bottom
+        return sx - 20, sy - 50, sx + 20, sy + 50
 
     def handle_collision(self, group, other):
         pass
